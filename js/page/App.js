@@ -54,13 +54,39 @@ View可以嵌套，可以有多种类型
      this.state={
        load:false
      }
+
    }
 
    render() {
        if (!this.state.load) {
-         return <Text>加载中...</Text>
+         return (
+            <View style={styles.container}>
+                <Text style={{fontSize:15, color:'red'}}>NN加载中...</Text>
+            </View>
+         )
        }
       return <Test/>
+   }
+   //执行耗时操作
+   componentDidMount() {
+     this.getData();
+   }
+   //网络请求
+   getData() {
+     fetch(movieUrl)
+     .then((response) => {
+      return response.json()
+     })
+     .then((responseJson) => {
+       this.setState({
+         load:true
+       })
+       return responseJson.movies
+     })
+     .catch((error) => {
+       console.warn(error)
+     })
+     .done()
    }
 }
 
@@ -106,11 +132,9 @@ fetch(url,opts)
 .then(完成的回调函数)
 .catch(失败的回调函数)
 */
-
+//
 // class getData extends Component {
-//   fetch(movieUrl, {
-//     method:'GET'
-//   })
+//   fetch(movieUrl)
 //   .then(
 //     (response) => {
 //       return response.json()
