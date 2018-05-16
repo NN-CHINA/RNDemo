@@ -1,64 +1,75 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import {
   StackNavigator,
-  TabNavigator,
 } from 'react-navigation'
+
+import { createBottomTabNavigator } from 'react-navigation';
 
 import {
   Text,
   View,
-} from 'react-native'
+  Image,
+} from 'react-native';
 
-import HomePage from './HomePage'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-class HomeScreen extends React.Component {
+// import HomePage from './HomePage';
+
+class MineScreen extends React.Component {
+    render() {
+      return (
+        <Text>NN</Text>
+      )
+    }
+}
+
+class HomePage extends React.Component {
     render() {
       return(
         <View>
-          <Text>HomeScreen</Text>
+          <Text>MainScreen</Text>
         </View>
       );
     }
 }
 
-// class MyScreen extends React.Component {
-//   render() {
-//     return (
-//
-//     );
-//   }
-// }
-
-export default TabNavigator(
-  {
-    首页 : {
-      screen : HomeScreen,
-    },
-    我的 : {
-      screen : HomeScreen,
-    }
+function tabBarImage(props) {
+  let index = props.index
+  if (index === 0) {
+    return
+  } else {
 
   }
-)
+}
 
-// export default class Index extends Component {
-//
-//     _renderTab(title) {
-//       return (
-//         <TabNavigator.Item>
-//           title={title}
-//         </TabNavigator.Item>
-//       )
-//     }
-//
-//     render(){
-//       return (
-//         <View>
-//           // <TabNavigator>
-//           //     {this._renderTab('首页')}
-//           //     {this._renderTab('我的')}
-//           // </TabNavigator>
-//         </View>
-//       )
-//     }
-// }
+export default createBottomTabNavigator({
+  '首页': HomePage,
+  '我的': MineScreen,
+}, {
+  tabBarOptions: {
+    activeTintColor: '#F00',
+    activeBackgroundColor: '#FF0',
+    inactiveTintColor: '#888',
+    inactiveBackgroundColor: '#FFF',
+    showLabel: true,
+    style:{
+      backgroundColor:'#fff',
+    },
+    labelStyle:{
+      fontSize:12
+    },
+    allowFontScaling: true,//当设置了labelStyle的fontSize时，无效
+  },
+  navigationOptions: ({ navigation }) => ({
+     tabBarIcon: ({ focused, tintColor }) => {
+       const { routeName } = navigation.state;
+       let iconName;
+       if (routeName === '首页') {
+         iconName = 'ios-person'
+       } else if (routeName === '我的') {
+         iconName = 'ios-information-circle'
+       }
+       return <Ionicons name={iconName} size={30} color={tintColor}/>
+     },
+   }),
+});

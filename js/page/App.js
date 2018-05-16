@@ -4,6 +4,7 @@
  * @flow
  */
 
+import {title} from 'errorhandler';
 import React,{Component} from 'react';
 
 import {
@@ -13,10 +14,12 @@ import {
   View,
   Image,
   Button,
+  TouchableOpacity,
   TextInput,//文本框
   ScrollView,//滚动视图
   FlatList,//长列表
   SectionList,//分组列表
+  ActivityIndicator,//圆形加载指示器
   AppRegistry,
 } from 'react-native';
 
@@ -26,6 +29,21 @@ import {
 
 //全局变量
 var movieUrl = 'https://facebook.github.io/react-native/movies.json'
+var globalNavigate
+/*
+{
+  "title": "The Basics - Networking",
+  "description": "Your app fetched this from a remote endpoint!",
+  "movies": [
+    { "title": "Star Wars", "releaseYear": "1977"},
+    { "title": "Back to the Future", "releaseYear": "1985"},
+    { "title": "The Matrix", "releaseYear": "1999"},
+    { "title": "Inception", "releaseYear": "2010"},
+    { "title": "Interstellar", "releaseYear": "2014"}
+  ]
+}
+*/
+
 /*
 View
 最基本的UI组件，支持 flexbox, style, some touch handling和容易控制的布局容器
@@ -47,134 +65,13 @@ View可以嵌套，可以有多种类型
  *收缩，1沿主轴方向拉伸屏幕长度
  */
 
+
+
  export default class App extends Component {
-   //构造器
-   constructor(props){
-     super(props)
-     this.state={
-       load:false
-     }
-
-   }
-
    render() {
-       if (!this.state.load) {
-         return (
-            <View style={styles.container}>
-                <Text style={{fontSize:15, color:'red'}}>NN加载中...</Text>
-            </View>
-         )
-       }
       return <Test/>
    }
-   //执行耗时操作
-   componentDidMount() {
-     this.getData();
-   }
-   //网络请求
-   getData() {
-     fetch(movieUrl)
-     .then((response) => {
-      return response.json()
-     })
-     .then((responseJson) => {
-       this.setState({
-         load:true
-       })
-       return responseJson.movies
-     })
-     .catch((error) => {
-       console.warn(error)
-     })
-     .done()
-   }
-}
 
-
- class HomeScreen extends React.Component {
-   static navigationOptions = {
-     title:'Welcome',
-   }
-   render(){
-     const {navigate} = this.props.navigation;
-     return(
-       <ScrollView style={styles.tableViewContainer}>
-          <View>
-             <Text>Hello, Navigation!</Text>
-     	    </View>
-          <FlatList
-              data={[
-                {key: 'NN', age: '12'},
-                {key: 'BB', age: '12'},
-              ]}
-
-              renderItem={({item}) => <CustomerCell name={item.key} age={item.age}/>}
-          />
-          <ViewColoredBoxesWithText/>
-          <Button title="Next"
-              onPress={() => navigate('First', {name : 'A'})}
-              />
-          </ScrollView>
-     );
-   }
- }
-
- const Test = StackNavigator(
-   {
-     Home: {screen: HomeScreen},
-     First: {screen: HomeScreen},
-   }
- )
-
-/*
-网络请求：
-fetch(url,opts)
-.then(完成的回调函数)
-.catch(失败的回调函数)
-*/
-//
-// class getData extends Component {
-//   fetch(movieUrl)
-//   .then(
-//     (response) => {
-//       return response.json()
-//     }
-//   )
-//   .then(
-//     (responseJson) => {
-//       return responseJson.movies
-//     }
-//   )
-//   .catch(
-//     (error) => {
-//       console.error(error);
-//     }
-//   )
-//   render() {
-//     return (
-//       <View>
-//       // Button title="Next"
-//       //     onPress={() => navigate('First', {name : 'A'})}
-//       <Button title='Get'
-//       onPress={
-//         () => {
-//           this
-//         }
-//       }>
-//       </View>
-//     )
-//   }
-// }
-
-function getMoviesFromApiAsync() {
-  return fetch('https://facebook.github.io/react-native/movies.json')
-    .then((response) => response.json())
-    .then((responseJson) => {
-      return responseJson.movies;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
 }
 
 class ViewColoredBoxesWithText extends Component {
@@ -233,7 +130,38 @@ class CustomerCell extends Component {
   }
 }
 
+class NormalCell extends React.Component {
+  render() {
+    return (
+      <TouchableOpacity style={styles.normalCell} onPress={
+        () => globalNavigate('ActivityIndicator_', {name : 'ActivityIndicatorVC'})
+      }>
+      <View>
+        <View style={styles.normalCell}>
+          <Text>{this.props.title}</Text>
+        </View>
+        <View style={{backgroundColor : '#DDD', height: 0.7}}/>
+      </View>
+      </TouchableOpacity>
+    )
+  }
+}
+
 const styles = StyleSheet.create({
+    indicatorContainer: {
+      flex:1,
+      justifyContent:'center',
+      alignItems:'center',
+      backgroundColor:'#FFF',
+    },
+    indicatorWarpContainer:{
+      backgroundColor:'rgba(0,0,0,0.4)',
+      width:90,
+      height:90,
+      alignItems:'center',
+      justifyContent: 'center',
+      borderRadius:10,
+    },
     container: {
       margin:10,//距平级周围视图边距
       padding:10,//距子视图边距
@@ -269,12 +197,99 @@ const styles = StyleSheet.create({
       alignItems:'center',
       padding: 10,
     },
+    normalCell: {
+      backgroundColor:'white',
+      height:44,
+      padding:10,
+      flexDirection:'row',
+      alignItems:'center',
+    }
 })
 
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    title:'Components',
+  }
 
+  //构造器
+  constructor(props){
+    super(props)
+    this.state={
+      load:false
+    }
+  }
 
+  render(){
+    const {navigate} = this.props.navigation;
+    globalNavigate = navigate
+    if (this.state.load==false) {
+      return <Loading/>
+    }
+    return(
+      <ScrollView style={styles.tableViewContainer}>
+       <View>
+          <Text>{this.title}</Text>
+       </View>
+       <FlatList
+           data={this.state.dataSource}
+           renderItem={({item}) => <CustomerCell name={item.key} age={item.age}/>}
+       />
+       <ViewColoredBoxesWithText/>
+       <Button title="Next"
+           onPress={() => navigate('First', {name : 'A'})}
+           />
+       </ScrollView>
+    )
+  }
+  
+  //执行耗时操作
+  componentDidMount() {
+    this.getData();
+  }
+  //取消任何未完成的请求
+  componentWillUnmount() {
 
+  }
+  //网络请求
+  getData() {
+    fetch(movieUrl)
+    .then((response) => {
+     return response.json()
+    })
+    .then((responseJson) => {
+      this.setState({
+        load:true
+      })
+      return responseJson.movies
+    })
+    .catch((error) => {
+      console.warn(error)
+    })
+    .done()
+  }
+}
 
+/**
+ActivityIndicator
+props
+animating:Whether to show the indicator (true, the default) or hide it (false).
+color:The foreground color of the spinner (default is gray).
+size:Size of the indicator (default is 'small'). Passing a number to the size prop is only supported on Android.
+hidesWhenStopped:Whether the indicator should hide when not animating (true by default).
+*/
+class Loading extends React.Component {
+  render(){
+    return(
+      <View style={styles.indicatorContainer}>
+        <ActivityIndicator color='#F00' animating={true} size={0}/>
+      </View>
+    )
+  }
+}
+
+const Test = StackNavigator({
+    Home: {screen: HomeScreen},
+})
 
 
 

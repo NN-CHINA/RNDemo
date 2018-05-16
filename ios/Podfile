@@ -1,0 +1,11 @@
+platform :ios, '8.0'
+
+target 'RNDemo' do
+  # use_frameworks!
+
+  target 'RNDemoTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
