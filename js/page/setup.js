@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {
-  StackNavigator,
-} from 'react-navigation'
 
-import { createBottomTabNavigator } from 'react-navigation';
+import {
+  createBottomTabNavigator,
+} from 'react-navigation';
 
 import {
   Text,
@@ -11,40 +10,16 @@ import {
   Image,
 } from 'react-native';
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import HomePage from './HomePage.js';
 
-// import HomePage from './HomePage';
+import { YellowBox } from 'react-native'
 
-class MineScreen extends React.Component {
-    render() {
-      return (
-        <Text>NN</Text>
-      )
-    }
-}
-
-class HomePage extends React.Component {
-    render() {
-      return(
-        <View>
-          <Text>MainScreen</Text>
-        </View>
-      );
-    }
-}
-
-function tabBarImage(props) {
-  let index = props.index
-  if (index === 0) {
-    return
-  } else {
-
-  }
-}
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated'])
+YellowBox.ignoreWarnings(['Module RCTImageLoader requires main queue setup'])
 
 export default createBottomTabNavigator({
   '首页': HomePage,
-  '我的': MineScreen,
+  '我的': HomePage,
 }, {
   tabBarOptions: {
     activeTintColor: '#F00',
@@ -69,7 +44,8 @@ export default createBottomTabNavigator({
        } else if (routeName === '我的') {
          iconName = 'ios-information-circle'
        }
-       return <Ionicons name={iconName} size={30} color={tintColor}/>
+       return <Image source={require('./source/tab_client_nor.png')}/>
      },
-   }),
+     tabBarVisible: navigation.state.index === 0,
+    })
 });
