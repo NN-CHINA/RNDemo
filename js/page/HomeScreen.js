@@ -4,8 +4,13 @@ import {
   Text,
   Button,
   StatusBar,
+  Dimensions,
+  WebView,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
+import WebViewScreen from './WebView'
+
+var deviceWidth = Dimensions.get('window').width;
 
 //navigate and push accept an optional second argument
 //to let you pass parameters to the route you are navigating to
@@ -34,12 +39,28 @@ export default class HomeScreen extends React.Component {
       load:false,
       dataSource:null
     }
+    this.accessCycleScrollViewDetail = this.accessCycleScrollViewDetail.bind(this);
+  }
+
+  accessCycleScrollViewDetail(props) {
+    const type = props.type;
+    switch (type) {
+      case 1: {
+        this.props.navigation.push('Web', {link: props.link_url});
+      }
+
+        break;
+      default:
+
+    }
   }
 
   render() {
     return (
-      <View style={{backgroundColor:'#f00', height:200}}>
-        <CycleScrollView />
+      <View style={{
+        height:deviceWidth * 9 / 16
+      }}>
+        <CycleScrollView adList={this.state.dataSource} onClick={this.accessCycleScrollViewDetail}/>
       </View>
     );
   }
