@@ -6,9 +6,12 @@ import {
   StatusBar,
   Dimensions,
   WebView,
+  SectionList,
+  ScrollView,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
 import WebViewScreen from './WebView'
+import HomeSectionListCell from './HomeSectionListCell'
 
 var deviceWidth = Dimensions.get('window').width;
 
@@ -37,7 +40,7 @@ export default class HomeScreen extends React.Component {
     super(props)
     this.state={
       load:false,
-      dataSource:null
+      dataSource:[],
     }
     this.accessCycleScrollViewDetail = this.accessCycleScrollViewDetail.bind(this);
   }
@@ -57,11 +60,16 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <View style={{
-        height:deviceWidth * 9 / 16
+      <ScrollView style={{
+        backgroundColor:'#FFF'
       }}>
-        <CycleScrollView adList={this.state.dataSource} onClick={this.accessCycleScrollViewDetail}/>
-      </View>
+        <View style={{
+          height:deviceWidth * 9 / 16
+        }}>
+          <CycleScrollView adList={this.state.dataSource.adList} onClick={this.accessCycleScrollViewDetail}/>
+        </View>
+        <SectionListView data={this.state.dataSource.hotProjectList}/>
+      </ScrollView>
     );
   }
 
@@ -105,7 +113,7 @@ export default class HomeScreen extends React.Component {
     .then((responseJson) => {
       this.setState({
         load:true,
-        dataSource:responseJson.data.adList
+        dataSource:responseJson.data,
       })
       console.log(responseJson);
       return responseJson.data
@@ -116,6 +124,26 @@ export default class HomeScreen extends React.Component {
     .done()
   }
 
+}
+
+class SectionListView extends Component {
+  render() {
+    if (this.props.data == null) {
+      return <View />
+    }
+    return (
+      <SectionList
+        sections={[
+          {data:this.props.data}
+        ]}
+        renderItem={
+          ({item}) => (
+            <HomeSectionListCell data={item}/>
+          )
+        }
+      />
+    )
+  }
 }
 
 export class DetailsScreen extends React.Component {
