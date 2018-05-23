@@ -52,10 +52,13 @@ View可以嵌套，可以有多种类型
 */
 
 /*
+http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html?^%$
  *Flexbox
  *指定组件子元素的布局
  *flexDirection
- *布局的主轴，竖直轴(column)，水平轴（row）
+ *布局的主轴，竖直轴(column)，水平轴（row）,列从下（column-reverse），行从右（row-reverse);
+ *flex-wrap
+ *换行，不换行（nowrap），正方向换行（warp),反方向换行（warp-reverse）；
  *justifyContent
  *子元素沿主轴的排列方式，可选项为flex-start、center、flex-end、space-around以及space-between
  *alignItems
@@ -241,7 +244,7 @@ class HomeScreen extends React.Component {
        </ScrollView>
     )
   }
-  
+
   //执行耗时操作
   componentDidMount() {
     this.getData();

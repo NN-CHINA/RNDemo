@@ -4,19 +4,30 @@ import {
   StyleSheet,
   Text,
   Image,
+  Dimensions,
+  PixelRatio,
 } from 'react-native'
+
+
+var deviceWidth = Dimensions.get('window').width;
 
 export default class HomeSectionListCell extends React.Component {
   render() {
     console.log(this.props.data);
     return (
       <View style={styles.cell}>
-        <Image source={{uri:this.props.data.cover_img}}
-          style={styles.image}
-        />
-        <View style={styles.rightContainerView}>
-          <Text style={styles.title}>NN</Text>
-          <TagsView tags={this.props.data.tags_ids}/>
+        <View style={styles.cellContainer}>
+          <Image source={{uri:this.props.data.cover_img}}
+            style={styles.image}
+          />
+          <View style={styles.rightContainerView}>
+            <Text style={styles.title}>{this.props.data.name}</Text>
+            <TagsView tags={this.props.data.tags_ids}/>
+            <TagsView tags={this.props.data.cat_ids}/>
+            <Text>佣金</Text>
+          </View>
+        </View>
+        <View style={{backgroundColor:'#ddd', left:10, height:(1/PixelRatio.get())}}>
         </View>
       </View>
     )
@@ -26,9 +37,10 @@ export default class HomeSectionListCell extends React.Component {
 function TagsView(props) {
   const tagsView = props.tags.map(
     (tagInfo) => {
-      console.log(tagInfo);
       return (
-        <Text key={tagInfo} style={styles.tags}>{tagInfo}</Text>
+        <View  style={styles.tagsWarppedView}>
+          <Text key={tagInfo} style={styles.tags}>{tagInfo}</Text>
+        </View>
       )
     }
   );
@@ -41,32 +53,47 @@ function TagsView(props) {
 
 const styles = StyleSheet.create({
   cell: {
-    backgroundColor:'#fff',
-    height:120,
-    flexDirection:'row',
+    backgroundColor:'#fff'
+  },
+  cellContainer: {
+      backgroundColor:'#fff',
+      height:120,
+      flexDirection:'row',
+      padding:10,
   },
   image: {
-    backgroundColor:'#f00',
-    marginTop:10,
-    marginBottom:10,
+    backgroundColor:'#FFF',
     height:100,
     width:100,
-    left:10,
-  },
-  title: {
-    fontSize:17,
-    left:20,
-    backgroundColor:'#f00',
-    top:10,
   },
   rightContainerView: {
     flexDirection:'column',
+    backgroundColor:'#FFF',
+    paddingLeft:10,
+    justifyContent:'space-around',
+    width: deviceWidth - 120,
+  },
+  title: {
+    fontSize:17,
+    color: "#333333"
+  },
+  tagsWarppedView: {
+    backgroundColor: "#0000",
+    height:20,
+    justifyContent:'center',
   },
   tagsContainer:{
     flexDirection:'row',
-    left:20,
+    justifyContent:'flex-start',
   },
   tags: {
-    backgroundColor:'#ddd',
+    color: "#999999",
+    fontSize:12,
+    paddingRight:3,
+    paddingLeft:3,
+    marginRight:3,
+    borderColor:'#0000',
+    borderWidth:4,
+    backgroundColor:'#f2f2f2'
   }
 })

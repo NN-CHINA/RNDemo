@@ -8,6 +8,7 @@ import {
   WebView,
   SectionList,
   ScrollView,
+  PixelRatio,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
 import WebViewScreen from './WebView'
@@ -68,7 +69,7 @@ export default class HomeScreen extends React.Component {
         }}>
           <CycleScrollView adList={this.state.dataSource.adList} onClick={this.accessCycleScrollViewDetail}/>
         </View>
-        <SectionListView data={this.state.dataSource.hotProjectList}/>
+        <SectionListView data={this.state.dataSource}/>
       </ScrollView>
     );
   }
@@ -134,14 +135,36 @@ class SectionListView extends Component {
     return (
       <SectionList
         sections={[
-          {data:this.props.data}
+          {data:this.props.data.hotProjectList, title:'热销房源'},
         ]}
         renderItem={
           ({item}) => (
             <HomeSectionListCell data={item}/>
           )
         }
+        renderSectionHeader={
+          ({item}) => (
+            <SectionHeader data={item}/>
+          )
+        }
       />
+    )
+  }
+}
+
+class SectionHeader extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    return (
+      <View style={{height:44, backgroundColor:'#fff'}}>
+        <View style={{height:44, flexDirection:'row', alignItems:'center'}} >
+          <View style={{backgroundColor:'#ff6c15', width:5, height:28, }}/>
+          <Text style={{marginLeft:8, fontSize:18, color:'#ff6c15'}}>{this.props.title}</Text>
+        </View>
+        <View style={{height:(1/PixelRatio.get()), backgroundColor:'#ddd'}}></View>
+      </View>
     )
   }
 }
