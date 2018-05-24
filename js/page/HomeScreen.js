@@ -9,10 +9,16 @@ import {
   SectionList,
   ScrollView,
   PixelRatio,
+  RefreshControl,
+  InteractionManager,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
 import WebViewScreen from './WebView'
 import HomeSectionListCell from './HomeSectionListCell'
+import RefreshListView, {RefreshState} from 'react-native-refresh-list-view'
+import BuildingDetailScreen from './BuildingDetailScreen'
+import Toast, {DURATION} from 'react-native-easy-toast'
+import NoDataScreen from './NoDataScreen'
 
 var deviceWidth = Dimensions.get('window').width;
 
@@ -22,9 +28,9 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title:'首页',
     headerStyle: {
-      backgroundColor: '#f00'
+      backgroundColor: '#fff'
     },
-    headerTintColor: '#00f',
+    headerTintColor: '#000',
     headerTitleStyle: {
       fontWeight: 'bold',
     },
@@ -42,6 +48,7 @@ export default class HomeScreen extends React.Component {
     this.state={
       load:false,
       dataSource:[],
+      refreshing:false,
     }
     this.accessCycleScrollViewDetail = this.accessCycleScrollViewDetail.bind(this);
   }
@@ -59,17 +66,28 @@ export default class HomeScreen extends React.Component {
     }
   }
 
+  onRefresh() {
+    this.setState({
+      refreshing:true
+    })
+    this.getData()
+  }
+
   render() {
     return (
       <ScrollView style={{
         backgroundColor:'#FFF'
-      }}>
-        <View style={{
-          height:deviceWidth * 9 / 16
-        }}>
-          <CycleScrollView adList={this.state.dataSource.adList} onClick={this.accessCycleScrollViewDetail}/>
-        </View>
-        <SectionListView data={this.state.dataSource}/>
+      }}
+      refreshControl={
+        <RefreshControl
+          refreshing={this.state.refreshing}
+          onRefresh={this.onRefresh.bind(this)}
+          // onEndReached={}
+          // onEndReachedThreshold={}
+        />
+      }
+      >
+        <ContentView data={this.state.dataSource} navigation={this.props.navigation}/>
       </ScrollView>
     );
   }
@@ -115,36 +133,66 @@ export default class HomeScreen extends React.Component {
       this.setState({
         load:true,
         dataSource:responseJson.data,
+        refreshing:false,
       })
       console.log(responseJson);
       return responseJson.data
     })
     .catch((error) => {
       console.warn(error)
+      this.setState({
+        refreshing:false,
+      })
+      this.refs.toast.show('网络请求失败')
     })
     .done()
   }
 
 }
 
+class  ContentView extends Component {
+  render() {
+      if (this.props == null) {
+        return (
+          <NoDataScreen />
+        )
+      }
+      return (
+        <View>
+            <View style={{
+              height:deviceWidth * 9 / 16
+            }}>
+                <CycleScrollView adList={this.props.data.adList} onClick={this.accessCycleScrollViewDetail}/>
+            </View>
+            <SectionListView data={this.props.data} navigation={this.props.navigation}/>
+            <Toast ref="toast" position='top'/>
+          </View>
+      )
+  }
+}
+
 class SectionListView extends Component {
   render() {
-    if (this.props.data == null) {
+    if (this.props.data == null || this.props.data.length == 0) {
       return <View />
     }
+    console.log(this.props.data);
     return (
       <SectionList
         sections={[
-          {data:this.props.data.hotProjectList, title:'热销房源'},
+          {data:this.props.data.hotProjectList, title:'热销楼盘'},
+          {data:this.props.data.promotionProjectList, title:'特价房源'}
         ]}
         renderItem={
           ({item}) => (
-            <HomeSectionListCell data={item}/>
+            <HomeSectionListCell data={item} onPress={
+              () => this.props.navigation.push('BuildingDetail')
+            }/>
           )
         }
         renderSectionHeader={
-          ({item}) => (
-            <SectionHeader data={item}/>
+          ({section}) => (
+            <SectionHeader data={section}/>
           )
         }
       />
@@ -153,15 +201,12 @@ class SectionListView extends Component {
 }
 
 class SectionHeader extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     return (
       <View style={{height:44, backgroundColor:'#fff'}}>
         <View style={{height:44, flexDirection:'row', alignItems:'center'}} >
           <View style={{backgroundColor:'#ff6c15', width:5, height:28, }}/>
-          <Text style={{marginLeft:8, fontSize:18, color:'#ff6c15'}}>{this.props.title}</Text>
+          <Text style={{marginLeft:8, fontSize:18, color:'#ff6c15'}}>{this.props.data.title}</Text>
         </View>
         <View style={{height:(1/PixelRatio.get()), backgroundColor:'#ddd'}}></View>
       </View>

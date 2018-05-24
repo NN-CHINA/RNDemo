@@ -1,22 +1,19 @@
 import React, {Component} from 'react'
 import {
-  View,
   Text,
+  StyleSheet,
+  View,
   Image,
 } from 'react-native'
 import {
   createStackNavigator,
 } from 'react-navigation'
-import HomeScreen, {DetailsScreen} from './HomeScreen'
-import WebViewScreen from './WebView'
-import BuildingDetailScreen from './BuildingDetailScreen'
+import {DetailsScreen} from './HomeScreen'
 
 const RootStack = createStackNavigator({
-  Home: HomeScreen,
-  BuildingDetail: BuildingDetailScreen,
-  Web: WebViewScreen,
+  Details: DetailsScreen,
 }, {
-  initialRouteName: 'Home',
+  initialRouteName: 'Details',
   navigationOptions: {
     headerBackImage: (
       <View style={{padding:17, width:40, }}>
@@ -29,15 +26,17 @@ const RootStack = createStackNavigator({
   headerMode:'screen',
 });
 
-export default class HomePage extends React.Component {
+export default class MyPage extends React.Component {
   static router = RootStack.router;
-
-  componentWillUnmount() {
-
-  }
   render() {
     return (
       <RootStack navigation={this.props.navigation} />
     )
   }
 }
+
+const styles = StyleSheet.create({
+  text: {
+    alignItems:'center'
+  }
+})

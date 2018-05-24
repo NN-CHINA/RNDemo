@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   PixelRatio,
+  TouchableHighlight,
 } from 'react-native'
 
 
@@ -15,11 +16,10 @@ export default class HomeSectionListCell extends React.Component {
   render() {
     console.log(this.props.data);
     return (
+      <TouchableHighlight onPress={this.props.onPress}>
       <View style={styles.cell}>
         <View style={styles.cellContainer}>
-          <Image source={{uri:this.props.data.cover_img}}
-            style={styles.image}
-          />
+          <image source={{ uri: this.props.data.cover_img}} />
           <View style={styles.rightContainerView}>
             <Text style={styles.title}>{this.props.data.name}</Text>
             <TagsView tags={this.props.data.tags_ids}/>
@@ -30,10 +30,15 @@ export default class HomeSectionListCell extends React.Component {
         <View style={{backgroundColor:'#ddd', left:10, height:(1/PixelRatio.get())}}>
         </View>
       </View>
+      </TouchableHighlight>
     )
   }
 }
 
+
+// <Image source={{uri:this.props.data.cover_img}}
+//   style={styles.image}
+// />
 function TagsView(props) {
   const tagsView = props.tags.map(
     (tagInfo) => {
