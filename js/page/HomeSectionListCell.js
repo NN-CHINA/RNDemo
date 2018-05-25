@@ -19,7 +19,7 @@ export default class HomeSectionListCell extends React.Component {
       <TouchableHighlight onPress={this.props.onPress}>
       <View style={styles.cell}>
         <View style={styles.cellContainer}>
-          <image source={{ uri: this.props.data.cover_img}} />
+          <Image source={{ uri: this.props.data.cover_img}} style={styles.image}/>
           <View style={styles.rightContainerView}>
             <Text style={styles.title}>{this.props.data.name}</Text>
             <TagsView tags={this.props.data.tags_ids}/>

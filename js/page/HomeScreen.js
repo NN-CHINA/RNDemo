@@ -15,7 +15,6 @@ import {
 import CycleScrollView from './CycleScrollView'
 import WebViewScreen from './WebView'
 import HomeSectionListCell from './HomeSectionListCell'
-import RefreshListView, {RefreshState} from 'react-native-refresh-list-view'
 import BuildingDetailScreen from './BuildingDetailScreen'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import NoDataScreen from './NoDataScreen'
@@ -186,7 +185,7 @@ class SectionListView extends Component {
         renderItem={
           ({item}) => (
             <HomeSectionListCell data={item} onPress={
-              () => this.props.navigation.push('BuildingDetail')
+              () => this.props.navigation.push('BuildingDetail', {buildingId:item.id, roomId:item.room_id})
             }/>
           )
         }
