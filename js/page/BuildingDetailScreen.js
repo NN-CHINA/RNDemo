@@ -4,7 +4,7 @@ import {
   ScrollView,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
-import {NetManager, fetchRequest} from './NetManager'
+import NetManager from './NetManager'
 
 export default class BuildingDetailScreen extends React.Component {
   static navigationOptions = {
@@ -27,7 +27,7 @@ export default class BuildingDetailScreen extends React.Component {
     const {navigation} = this.props;
     let parameters = {
       id : navigation.getParam('buildingId', 0),
-      room_id : navigation.getParam('roomId', 0),
+      // room_id : navigation.getParam('roomId', 0),
     }
     console.log(parameters);
     NetManager.fetchRequest('/app/project/detail','POST', parameters, (data) => {

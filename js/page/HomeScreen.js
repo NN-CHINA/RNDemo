@@ -18,6 +18,7 @@ import HomeSectionListCell from './HomeSectionListCell'
 import BuildingDetailScreen from './BuildingDetailScreen'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import NoDataScreen from './NoDataScreen'
+import NetManager from './NetManager'
 
 var deviceWidth = Dimensions.get('window').width;
 
@@ -100,6 +101,11 @@ export default class HomeScreen extends React.Component {
 
   }
   //网络请求
+  lgetData() {
+    NetManager.fetchRequest('/app/index/index', 'POST', {region_name:'广州'}, (data) => {
+      console.log(data);
+    })
+  }
   getData() {
     const timeStamp = Date.parse(new Date()) / 1000;
     const timeStampString = timeStamp.toString();
