@@ -118,20 +118,22 @@ export default class HomeScreen extends React.Component {
     var md5 = forge.md.md5.create();
     md5.update(willBeEncodedString);
     const authcode = md5.digest().toHex();
+    var formData = new FormData();
+    formData.append('region_name', '广州');
     fetch('http://zhutou.zhianinvest.com/app/index/index', {
       method:'POST',
       headers: {
+        'Content-Type':'application/json',
         versionNum: '1.0.2',
         usertype:'1',
         platformType:'iOS',
         authCode:authcode,
         timestamp:timeStamp,
       },
-      body: JSON.stringify({
-        region_name:'广州',
-      }),
+      body: formData,
     })
     .then((response) => {
+      console.log(response);
      return response.json()
     })
     .then((responseJson) => {

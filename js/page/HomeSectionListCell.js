@@ -14,7 +14,6 @@ var deviceWidth = Dimensions.get('window').width;
 
 export default class HomeSectionListCell extends React.Component {
   render() {
-    console.log(this.props.data);
     return (
       <TouchableHighlight onPress={this.props.onPress}>
       <View style={styles.cell}>
@@ -39,7 +38,7 @@ export default class HomeSectionListCell extends React.Component {
 // <Image source={{uri:this.props.data.cover_img}}
 //   style={styles.image}
 // />
-function TagsView(props) {
+export function TagsView(props) {
   const tagsView = props.tags.map(
     (tagInfo) => {
       return (

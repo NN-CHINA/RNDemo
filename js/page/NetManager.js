@@ -13,6 +13,13 @@ export default class NetManager {
     var md5 = forge.md.md5.create();
     md5.update(willBeEncodedString);
     const authcode = md5.digest().toHex();
+    var formData = new FormData();
+    console.log(parameters);
+    for (var key in parameters) {
+      if (parameters.hasOwnProperty(key)) {
+        formData.append(key, parameters[key]);
+      }
+    }
     let headers = {
       versionNum: '1.0.2',
       usertype:'1',
@@ -24,15 +31,20 @@ export default class NetManager {
     fetch(url, {
       method:method,
       headers: headers,
-      body: JSON.stringify(parameters),
+      body: formData,
     })
     .then((response) => {
-      console.log(response);
-      return response.json()
+      if (response.ok == true) {
+        return response.json()
+      }
     })
     .then((responseJson) => {
-      console.log(responseJson);
-      callBack(responseJson);
+      let code = responseJson['code'];
+      if (code == 40001) {
+        callBack(responseJson['data'], null);
+      } else {
+         callBack(null, responseJson['msg']);
+      }
     })
     .catch((error) => {
       console.warn(error)

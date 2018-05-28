@@ -9,6 +9,8 @@ import {
   TouchableHighlight,
 } from 'react-native'
 
+var deviceWidth = Dimensions.get('window').width;
+
 import Swiper from 'react-native-swiper';
 
 
@@ -40,6 +42,7 @@ export default class CycleScrollView extends React.Component {
 
 const styles = StyleSheet.create({
   wrapper: {
+    height:deviceWidth * 9 / 16,
   },
   slide1: {
     flex: 1,
@@ -84,7 +87,7 @@ function Content(props) {
               props.onClick(adInfo)
             }
           }>
-              <Image source={{uri:adInfo.pic_path}}
+              <Image source={{uri:(adInfo.pic_path != null ? adInfo.pic_path : adInfo)}}
                       style={styles.image} />
           </TouchableHighlight>
         </View>
