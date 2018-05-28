@@ -19,6 +19,7 @@ import BuildingDetailScreen from './BuildingDetailScreen'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import NoDataScreen from './NoDataScreen'
 import NetManager from './NetManager'
+import {styles} from './StyleSheet'
 
 var deviceWidth = Dimensions.get('window').width;
 
@@ -87,7 +88,7 @@ export default class HomeScreen extends React.Component {
         />
       }
       >
-        <ContentView data={this.state.dataSource} navigation={this.props.navigation}/>
+        <ContentView data={this.state.dataSource} navigation={this.props.navigation} accessCycleScrollViewDetail={this.accessCycleScrollViewDetail}/>
       </ScrollView>
     );
   }
@@ -165,14 +166,12 @@ class  ContentView extends Component {
         )
       }
       return (
-        <View>
-            <View style={{
-              height:deviceWidth * 9 / 16
-            }}>
-                <CycleScrollView adList={this.props.data.adList} onClick={this.accessCycleScrollViewDetail}/>
-            </View>
-            <SectionListView data={this.props.data} navigation={this.props.navigation}/>
-            <Toast ref="toast" position='top'/>
+          <View>
+            <CycleScrollView adList={this.props.data.adList} style={styles.cycleScrollView} onClick={this.props.accessCycleScrollViewDetail}/>
+              <View>
+                <SectionListView data={this.props.data} navigation={this.props.navigation}/>
+              </View>
+              <Toast ref="toast" position='top'/>
           </View>
       )
   }

@@ -3,6 +3,8 @@ import {
   Text,
   ScrollView,
   View,
+  Image,
+  ImageBackground,
   PixelRatio,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
@@ -23,12 +25,16 @@ export default class BuildingDetailScreen extends React.Component {
   }
 
   render() {
-    if (this.state.dataSource == null) {
+    let dataSource = this.state.dataSource;
+    if (dataSource == null) {
       return <View />
     }
     return (
       <ScrollView>
-        <BuidingDetailHeaderInfoView buildingInfo={this.state.dataSource.info}/>
+        <BuidingDetailHeaderInfoView buildingInfo={dataSource.info}/>
+        <BuildingCommissionPlan plan={dataSource.plan}/>
+        <BuildingProppertyList propertyList={dataSource.info.lShow}/>
+        <BuildingMainType />
       </ScrollView>
     )
   }
@@ -75,8 +81,70 @@ class BuidingDetailHeaderInfoView extends Component {
 
 class BuildingCommissionPlan extends Component {
   render() {
+    function PlanList(props) {
+      let commissionPlan = props.plan;
+      let planView =commissionPlan.map(
+              (plan) => {
+                let planName = plan.name;
+                let planCommission = plan.commission;
+                return (
+                  <ImageBackground source={require('./source/bg_commission.png')}
+                    style={{width:123, height:63, alignItems:'center', justifyContent:'space-between', marginRight:10}}>
+                    <Text style={{marginTop:8, fontSize:14}}>{planName}</Text>
+                    <Text style={{marginBottom:8, fontSize:14, color:"#ff6c15"}}>{planCommission}</Text>
+                  </ImageBackground>
+                )
+              }
+            )
+      return planView;
+    }
     return (
-      <View />
+      <View style={{backgroundColor:'white', marginTop:10, padding:15}}>
+        <Text style={{fontSize:17}}>佣金方案</Text>
+        <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginTop:15, marginLeft:-15, marginRight:-15}}/>
+        <ScrollView style={{marginTop:15, flexDirection:'row'}} horizontal={true} showsHorizontalScrollIndicator={false}>
+            <PlanList plan={this.props.plan} style={{}}/>
+        </ScrollView>
+      </View>
+    )
+  }
+}
+
+class BuildingProppertyList extends Component {
+  render() {
+    let propertyList = this.props.propertyList;
+    var listArray = new Array();
+    for (var property in propertyList) {
+      if (propertyList.hasOwnProperty(property)) {
+        let propertyItem = (
+            <View>
+            <View style={{padding:0, height:44, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+              <Text>{property}</Text>
+              <Text>{propertyList[property]}</Text>
+            </View>
+            <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginLeft:-15, marginRight:-15}}/>
+            </View>
+          )
+        listArray.push(propertyItem);
+      }
+    }
+    return (
+      <View style={{backgroundColor:'white', padding:15, marginTop:10, paddingBottom:0}}>
+        <Text style={{fontSize:17}}>楼盘信息</Text>
+        <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginTop:15, marginLeft:-15, marginRight:-15}}/>
+        {listArray}
+      </View>
+    )
+  }
+}
+
+class  BuildingMainType extends Component {
+  render() {
+    return (
+      <View style={{backgroundColor:'white', padding:15, paddingBottom:0, marginTop:10}}>
+        <Text style={{fontSize:17}}>主力户型</Text>
+        <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginTop:15, marginLeft:-15, marginRight:-15}}/>
+      </View>
     )
   }
 }
