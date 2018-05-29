@@ -14,6 +14,7 @@ var deviceWidth = Dimensions.get('window').width;
 
 export default class HomeSectionListCell extends React.Component {
   render() {
+    console.log(this.props.data);
     return (
       <TouchableHighlight onPress={this.props.onPress}>
       <View style={styles.cell}>

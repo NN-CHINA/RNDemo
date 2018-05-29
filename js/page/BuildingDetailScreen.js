@@ -5,12 +5,24 @@ import {
   View,
   Image,
   ImageBackground,
+  Button,
   PixelRatio,
 } from 'react-native'
 import CycleScrollView from './CycleScrollView'
 import NetManager from './NetManager'
-import {styles} from './StyleSheet'
-import {TagsView} from './HomeSectionListCell'
+import {
+  styles,
+  deviceWidth,
+  deviceHeight,
+  statusBarHeight,
+  onePixelLength,
+} from './StyleSheet'
+import HomeSectionListCell, {
+  TagsView,
+} from './HomeSectionListCell'
+import {
+  CustomerTopImageButton,
+} from './CommonComponent'
 
 export default class BuildingDetailScreen extends React.Component {
   static navigationOptions = {
@@ -29,13 +41,21 @@ export default class BuildingDetailScreen extends React.Component {
     if (dataSource == null) {
       return <View />
     }
+    console.log(deviceWidth, deviceHeight);
+    console.log(statusBarHeight);
     return (
-      <ScrollView>
-        <BuidingDetailHeaderInfoView buildingInfo={dataSource.info}/>
-        <BuildingCommissionPlan plan={dataSource.plan}/>
-        <BuildingProppertyList propertyList={dataSource.info.lShow}/>
-        <BuildingMainType />
-      </ScrollView>
+      <View>
+        <ScrollView style={{height:(deviceHeight - 44 - 49 - statusBarHeight)}}>
+          <BuidingDetailHeaderInfoView buildingInfo={dataSource.info}/>
+          <BuildingCommissionPlan plan={dataSource.plan}/>
+          <BuildingProppertyList propertyList={dataSource.info.lShow}/>
+          <BuildingMainType mainTypeList={dataSource.htype}/>
+          <BuildingLocation buildingInfo={dataSource.info} />
+          <BuildingSale/>
+          <BuildingRecommend recommendList={dataSource.rePlist}/>
+        </ScrollView>
+        <BottomTabBar style={{height:49, backgroundColor:'#f00',marginTop:10}}/>
+      </View>
     )
   }
 
@@ -140,10 +160,98 @@ class BuildingProppertyList extends Component {
 
 class  BuildingMainType extends Component {
   render() {
+    let mainTypeList = this.props.mainTypeList;
+    let mainTypeView = mainTypeList.map(
+      (typeInfo) => {
+        return (
+          <View>
+          <Image source={{uri:typeInfo.pic_path}} style={{width:200, height:200, marginRight:10}}/>
+          <Text style={{marginTop:10, color:'#ff6c15'}}>【{typeInfo.name}】
+            <Text style={{color:'#666'}}>{typeInfo.description}</Text>
+          </Text>
+          </View>
+        )
+      }
+    )
     return (
       <View style={{backgroundColor:'white', padding:15, paddingBottom:0, marginTop:10}}>
         <Text style={{fontSize:17}}>主力户型</Text>
         <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginTop:15, marginLeft:-15, marginRight:-15}}/>
+        <ScrollView style={{marginLeft:-15, marginRight:-15, padding:15}} horizontal={true} showsHorizontalScrollIndicator={false}>
+          {mainTypeView}
+        </ScrollView>
+      </View>
+    )
+  }
+}
+
+class BuildingLocation extends Component {
+  render() {
+    let buildingInfo = this.props.buildingInfo;
+    let address = buildingInfo.address;
+    let imagePath = buildingInfo.map_img;
+    return(
+      <View style={{backgroundColor:'#fff', padding:15, paddingBottom:0, marginTop:10}}>
+        <Text style={{fontSize:17}}>楼盘位置</Text>
+        <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginTop:15, marginLeft:-15, marginRight:-15}}/>
+        <Text style={{marginTop:15, marginBottom:15}}>{address}</Text>
+        <Image source={{uri:imagePath}} style={{width:deviceWidth, height:deviceWidth * 9 / 16, marginLeft:-15}}/>
+      </View>
+    )
+  }
+}
+
+class BuildingSale extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return(
+      <View style={{backgroundColor:'#fff', padding:15, marginTop:10}}>
+        <Text>阳光销控</Text>
+      </View>
+    )
+  }
+}
+
+class BuildingRecommend extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    let recommendList = this.props.recommendList;
+    let recommendView = recommendList.map(
+      (recommendInfo) => {
+        return (
+          <HomeSectionListCell data={recommendInfo}/>
+        )
+      }
+    )
+    return(
+      <View style={{backgroundColor:'#fff', padding:15, marginTop:10, paddingBottom:0, marginBottom:10}}>
+        <Text style={{fontSize:17}}>相关推荐</Text>
+        <View style={{backgroundColor:'#ddd', height:1/PixelRatio.get(), marginTop:15, marginLeft:-15, marginRight:-15}}/>
+        <View style={{marginLeft:-15, marginRight:-15}}>
+        {recommendView}
+        </View>
+      </View>
+    )
+  }
+}
+
+class BottomTabBar extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return(
+      <View style={{backgroundColor:'#fff', height:49, borderTopColor:'#ddd',borderTopWidth:onePixelLength, alignItems:'center', flexDirection:'row'}}>
+        <CustomerTopImageButton title={'咨询'} style={{width:deviceWidth / 4}}/>
+        <View style={{width:onePixelLength, height:36, backgroundColor:'#ddd'}}></View>
+        <CustomerTopImageButton title={'收藏'} style={{width:deviceWidth / 4}} type={'collecte'}/>
+        <View style={{backgroundColor:'#ff6c15', width:deviceWidth / 2, height:49, alignItems:'center', justifyContent:'center'}}>
+          <Button title='推荐客户' color="#fff"/>
+        </View>
       </View>
     )
   }

@@ -12,7 +12,7 @@ export default class WebViewScreen extends React.Component {
       return {
         title: params ? params.title : 'ZJHFZ',
         headerLeft: <Button title='🔙' onPress={(event) => {
-          params.webView.webViewGoBack;
+          // params.webView.webViewGoBack;
           // if (this.state.canGoBack) {
           //   this.refs['webView'].goBack();
           // } else {
@@ -29,7 +29,6 @@ export default class WebViewScreen extends React.Component {
       }
       this.onNavigationStateChange = this.onNavigationStateChange.bind(this);
       this.webViewGoBack = this.webViewGoBack.bind(this);
-      this.props.navigation.setParams({webView:this});
     }
 
     onNavigationStateChange(props) {
